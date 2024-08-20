@@ -57,13 +57,13 @@ pipeline {
                                     -D sonar.projectVersion=1.0-SNAPSHOT \
                                     -D sonar.sources=. \
                                     -D sonar.login=admin \
-                                    -D sonar.password=pass@123 \
+                                    -D sonar.password=admin@123 \
                                     -D sonar.projectKey=project \
                                     -D sonar.projectName=wishlist-py \
                                     -D sonar.inclusions=index.py \
                                     -D sonar.sourceEncoding=UTF-8 \
                                     -D sonar.language=python \
-                                    -D sonar.host.url=http://13.233.184.252:9000/"""
+                                    -D sonar.host.url=http://3.110.166.60:9000//"""
                                 }
                             }
                         }
@@ -76,60 +76,60 @@ pipeline {
                 parallel (
                     'docker login': {
                         withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
-                            sh "docker login -u shobana561994 -p ${dockerPassword}"
+                            sh "docker login -u shobana56it -p ${dockerPassword}"
                         }
                     },
                     'ui-web-app-reactjs': {
                         dir('ui-web-app-reactjs'){
                             sh """
-                            docker build -t shobana561994/ui:v1 .
-                            docker push shobana561994/ui:v1
-                            docker rmi shobana561994/ui:v1
+                            docker build -t shobana56it/ui:v1 .
+                            docker push shobana56it/ui:v1
+                            docker rmi shobana56it/ui:v1
                             """
                         }
                     },
                     'zuul-api-gateway' : {
                         dir('zuul-api-gateway'){
                             sh """
-                            docker build -t shobana561994/api:v1 .
-                            docker push shobana561994/api:v1
-                            docker rmi shobana561994/api:v1
+                            docker build -t shobana56it/api:v1 .
+                            docker push shobana56it/api:v1
+                            docker rmi shobana56it/api:v1
                             """
                         }
                     },
                     'offers-microservice-spring-boot': {
                         dir('offers-microservice-spring-boot'){
                             sh """
-                            docker build -t shobana561994/spring:v1 .
-                            docker push shobana561994/spring:v1
-                            docker rmi shobana561994/spring:v1
+                            docker build -t shobana56it/spring:v1 .
+                            docker push shobana56it/spring:v1
+                            docker rmi shobana56it/spring:v1
                             """
                         }
                     },
                     'shoes-microservice-spring-boot': {
                         dir('shoes-microservice-spring-boot'){
                             sh """
-                            docker build -t shobana561994/spring:v2 .
-                            docker push shobana561994/spring:v2
-                            docker rmi shobana561994/spring:v2
+                            docker build -t shobana56it/spring:v2 .
+                            docker push shobana56it/spring:v2
+                            docker rmi shobana56it/spring:v2
                             """
                         }
                     },
                     'cart-microservice-nodejs': {
                         dir('cart-microservice-nodejs'){
                             sh """
-                            docker build -t shobana561994/ui:v2 .
-                            docker push shobana561994/ui:v2
-                            docker rmi shobana561994/ui:v2
+                            docker build -t shobana56it/ui:v2 .
+                            docker push shobana56it/ui:v2
+                            docker rmi shobana56it/ui:v2
                             """
                         }
                     },
                     'wishlist-microservice-python': {
                         dir('wishlist-microservice-python'){
                             sh """
-                            docker build -t shobana561994/python:v1 .
-                            docker push shobana561994/python:v1
-                            docker rmi shobana561994/python:v1
+                            docker build -t shobana56it/python:v1 .
+                            docker push shobana56it/python:v1
+                            docker rmi shobana56it/python:v1
                             """
                         }
                     }
