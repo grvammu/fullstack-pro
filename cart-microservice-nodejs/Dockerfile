@@ -1,8 +1,20 @@
+# Use the official Node.js image
 FROM node:14
-COPY . /var/www
+
+# Set the working directory
 WORKDIR /var/www
-#RUN npm install
 
-EXPOSE 1004
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-CMD [ "node", "index.js" ]
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Command to run the app
+CMD ["node", "index.js"]
