@@ -1,10 +1,13 @@
-pipeline {
-    agent any
+ pipeline{
+  agent any
+    environment {
+        SONARQUBE_TOKEN = 'sqa_c12887738f42f62b77e266aef98582d2b36688e9'
+    }
     stages {
-        stage('SCM Checkout'){
+        stage('SCM Checkout') {
             steps {
-            git branch: 'main', url: 'https://github.com/shobana561994/fullstack-pro.git'
-            sh 'ls'
+                git branch: 'main', url: 'https://github.com/shobana561994/Microservices.git'
+                sh 'ls' // List files to verify checkout
             }
         }
         stage('SonarQube Analysis') {
@@ -14,14 +17,14 @@ pipeline {
                         script {
                             dir('cart-microservice-nodejs') {
                                 def scannerHome = tool 'sonarscanner4'
-                                 withSonarQubeEnv('sonar-pro') {
-                                     sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=cart-nodejs"
-                                 }
+                                withSonarQubeEnv('sonar-pro') {
+                                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=cart-nodejs -Dsonar.login=${env.SONARQUBE_TOKEN}"
+                                }
                             }
                             dir('ui-web-app-reactjs') {
                                 def scannerHome = tool 'sonarscanner4';
                                 withSonarQubeEnv('sonar-pro') {
-                                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ui-reactjs"
+                                    sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=ui-reactjs -Dsonar.login=${env.SONARQUBE_TOKEN}"
                                 }
                             }
                         }
@@ -29,41 +32,43 @@ pipeline {
                     'spring boot application': {
                         script {
                             dir('offers-microservice-spring-boot') {
-                                def mvn = tool 'maven3';
+                                sh 'which mvn' // Check if mvn is in the PATH
+                                sh '/usr/bin/mvn -version' // Print Maven version to ensure it's found
                                 withSonarQubeEnv('sonar-pro') {
-                                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=offers-spring-boot -Dsonar.projectName=offers-spring-boot"
+                                    sh "/usr/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=offers-spring-boot -Dsonar.projectName=offers-spring-boot -Dsonar.login=${env.SONARQUBE_TOKEN}"
                                 }
                             }
                             dir('shoes-microservice-spring-boot') {
-                                def mvn = tool 'maven3';
+                                sh 'which mvn' // Check if mvn is in the PATH
+                                sh '/usr/bin/mvn -version' // Print Maven version to ensure it's found
                                 withSonarQubeEnv('sonar-pro') {
-                                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=shoe-spring-boot -Dsonar.projectName=shoes-spring-boot"
+                                    sh "/usr/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=shoe-spring-boot -Dsonar.projectName=shoes-spring-boot -Dsonar.login=${env.SONARQUBE_TOKEN}"
                                 }
                             }
                             dir('zuul-api-gateway') {
-                                def mvn = tool 'maven3';
+                                sh 'which mvn' // Check if mvn is in the PATH
+                                sh '/usr/bin/mvn -version' // Print Maven version to ensure it's found
                                 withSonarQubeEnv('sonar-pro') {
-                                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=zuul-api -Dsonar.projectName=zuul-api"
+                                    sh "/usr/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=zuul-api -Dsonar.projectName=zuul-api -Dsonar.login=${env.SONARQUBE_TOKEN}"
                                 }
                             }
                         }
                     },
                     'python app': {
-                        script{
+                        script {
                             dir('wishlist-microservice-python') {
                                 def scannerHome = tool 'sonarscanner4';
                                 withSonarQubeEnv('sonar-pro') {
                                     sh """/var/lib/jenkins/tools/hudson.plugins.sonar.SonarRunnerInstallation/sonarscanner4/bin/sonar-scanner \
                                     -D sonar.projectVersion=1.0-SNAPSHOT \
                                     -D sonar.sources=. \
-                                    -D sonar.login=admin \
-                                    -D sonar.password=admin123 \
+                                    -D sonar.login=${env.SONARQUBE_TOKEN} \
                                     -D sonar.projectKey=project \
                                     -D sonar.projectName=wishlist-py \
                                     -D sonar.inclusions=index.py \
                                     -D sonar.sourceEncoding=UTF-8 \
                                     -D sonar.language=python \
-                                    -D sonar.host.url=http://3.110.166.60:9000//"""
+                                    -D sonar.host.url=http://15.206.28.94:9000/""" 
                                 }
                             }
                         }
@@ -75,7 +80,7 @@ pipeline {
             steps {
                 parallel (
                     'docker login': {
-                        withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
+                        withCredentials([string(credentialsId: 'dockerpass', variable: 'dockerPassword')]) {
                             sh "docker login -u shobana56it -p ${dockerPassword}"
                         }
                     },
@@ -141,7 +146,7 @@ pipeline {
                 parallel (
                     'deploy on k8s': {
                         script {
-                            withKubeCredentials(kubectlCredentials: [[ credentialsId: 'kubernetes', namespace: 'ms' ]]) {
+                            withKubeCredentials(kubectlCredentials: [[ credentialsId: 'k8s', namespace: 'ms' ]]) {
                                 sh 'kubectl get ns' 
                                 sh 'kubectl apply -f kubernetes/yamlfile'
                             }
