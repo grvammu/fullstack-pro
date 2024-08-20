@@ -6,7 +6,7 @@
     stages {
         stage('SCM Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/shobana561994/Microservices.git'
+                git branch: 'main', url: 'https://github.com/shobana561994/fullstack-pro.git'
                 sh 'ls' // List files to verify checkout
             }
         }
@@ -68,7 +68,7 @@
                                     -D sonar.inclusions=index.py \
                                     -D sonar.sourceEncoding=UTF-8 \
                                     -D sonar.language=python \
-                                    -D sonar.host.url=http://15.206.28.94:9000/""" 
+                                    -D sonar.host.url=http://3.110.166.60:9000/""" 
                                 }
                             }
                         }
@@ -80,7 +80,7 @@
             steps {
                 parallel (
                     'docker login': {
-                        withCredentials([string(credentialsId: 'dockerpass', variable: 'dockerPassword')]) {
+                        withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
                             sh "docker login -u shobana56it -p ${dockerPassword}"
                         }
                     },
