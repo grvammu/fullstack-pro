@@ -35,7 +35,7 @@ resource "kubernetes_deployment" "zuul-api" {
           }
         }
         container {
-          image = "shobana56it/api:v1"
+          image = "ammudivy/api:v1"
           name  = "zuul-api"
           port {
             container_port = 9999
