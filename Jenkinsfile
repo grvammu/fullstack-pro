@@ -1,12 +1,12 @@
  pipeline{
   agent any
     environment {
-        SONARQUBE_TOKEN = 'sqa_c12887738f42f62b77e266aef98582d2b36688e9'
+        SONARQUBE_TOKEN = 'sqa_d1fd67d6bc46aa42de2e2937b9f92025e2d6b2ea'
     }
     stages {
         stage('SCM Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/shobana561994/fullstack-pro.git'
+                git branch: 'main', url: 'https://github.com/grvammu/fullstack-pro.git'
                 sh 'ls' // List files to verify checkout
             }
         }
@@ -68,7 +68,7 @@
                                     -D sonar.inclusions=index.py \
                                     -D sonar.sourceEncoding=UTF-8 \
                                     -D sonar.language=python \
-                                    -D sonar.host.url=http://3.110.166.60:9000/""" 
+                                    -D sonar.host.url=http://3.84.189.159:9000/""" 
                                 }
                             }
                         }
@@ -81,60 +81,60 @@
                 parallel (
                     'docker login': {
                         withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
-                            sh "docker login -u shobana56it -p ${dockerPassword}"
+                            sh "docker login -u ammudivy -p ${dockerPassword}"
                         }
                     },
                     'ui-web-app-reactjs': {
                         dir('ui-web-app-reactjs'){
                             sh """
-                            docker build -t shobana56it/ui:v1 .
-                            docker push shobana56it/ui:v1
-                            docker rmi shobana56it/ui:v1
+                            docker build -t ammudivy/ui:v1 .
+                            docker push ammudivy/ui:v1
+                            docker rmi ammudivy/ui:v1
                             """
                         }
                     },
                     'zuul-api-gateway' : {
                         dir('zuul-api-gateway'){
                             sh """
-                            docker build -t shobana56it/api:v1 .
-                            docker push shobana56it/api:v1
-                            docker rmi shobana56it/api:v1
+                            docker build -t ammudivy/api:v1 .
+                            docker push ammudivy/api:v1
+                            docker rmi ammudivy/api:v1
                             """
                         }
                     },
                     'offers-microservice-spring-boot': {
                         dir('offers-microservice-spring-boot'){
                             sh """
-                            docker build -t shobana56it/spring:v1 .
-                            docker push shobana56it/spring:v1
-                            docker rmi shobana56it/spring:v1
+                            docker build -t ammudivy/spring:v1 .
+                            docker push ammudivy/spring:v1
+                            docker rmi ammudivy/spring:v1
                             """
                         }
                     },
                     'shoes-microservice-spring-boot': {
                         dir('shoes-microservice-spring-boot'){
                             sh """
-                            docker build -t shobana56it/spring:v2 .
-                            docker push shobana56it/spring:v2
-                            docker rmi shobana56it/spring:v2
+                            docker build -t ammudivy/spring:v2 .
+                            docker push ammudivy/spring:v2
+                            docker rmi ammudivy/spring:v2
                             """
                         }
                     },
                     'cart-microservice-nodejs': {
                         dir('cart-microservice-nodejs'){
                             sh """
-                            docker build -t shobana56it/ui:v2 .
-                            docker push shobana56it/ui:v2
-                            docker rmi shobana56it/ui:v2
+                            docker build -t ammudivy/ui:v2 .
+                            docker push ammudivy/ui:v2
+                            docker rmi ammudivy/ui:v2
                             """
                         }
                     },
                     'wishlist-microservice-python': {
                         dir('wishlist-microservice-python'){
                             sh """
-                            docker build -t shobana56it/python:v1 .
-                            docker push shobana56it/python:v1
-                            docker rmi shobana56it/python:v1
+                            docker build -t ammudivy/python:v1 .
+                            docker push ammudivy/python:v1
+                            docker rmi ammudivy/python:v1
                             """
                         }
                     }
